@@ -1,0 +1,376 @@
+<?xml version="1.0"?>
+<robot name="diffbot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Define common properties - Updated for 30x30cm chassis -->
+  <xacro:property name="base_size" value="0.3 0.3 0.15"/>
+  <xacro:property name="base_mass" value="5.0"/>
+  <xacro:property name="base_inertia_val" value="0.02"/>
+  
+  <xacro:property name="wheel_radius_val" value="0.1"/>
+  <xacro:property name="wheel_length_val" value="0.05"/>
+  <xacro:property name="wheel_mass" value="0.5"/>
+  <xacro:property name="wheel_inertia_val" value="0.01"/>
+  <xacro:property name="wheel_separation" value="0.35"/>  <!-- Distance between wheels -->
+  
+  <xacro:property name="caster_radius_val" value="0.05"/>
+  <xacro:property name="caster_mass" value="0.25"/>
+  <xacro:property name="caster_inertia_val" value="0.01"/>
+  
+  <xacro:property name="camera_size" value="0.05 0.05 0.05"/>
+  <xacro:property name="camera_mass" value="0.1"/>
+  <xacro:property name="camera_inertia_val" value="0.001"/>
+  <xacro:property name="camera_baseline" value="0.06"/>
+  <xacro:property name="camera_height" value="0.10"/>
+  <xacro:property name="camera_horizontal_fov" value="60"/>
+  
+  <xacro:property name="lidar_length_val" value="0.05"/>
+  <xacro:property name="lidar_radius_val" value="0.08"/>
+  <xacro:property name="lidar_mass" value="0.2"/>
+  <xacro:property name="lidar_inertia_val" value="0.001"/>
+
+  <xacro:arg name="camera_enabled" default="true" />
+  
+  <!-- Materials -->
+  <material name="blue">
+    <color rgba="0 0 0.8 1"/>
+  </material>
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+  <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
+  <material name="green">
+    <color rgba="0 1 0 1"/>
+  </material>
+  <material name="hospital_blue">
+    <color rgba="0.2 0.6 0.9 1"/>
+  </material>
+  
+  <!-- Base Link - 30x30cm chassis -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="${base_size}"/>
+      </geometry>
+      <material name="hospital_blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${base_size}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${base_mass}"/>
+      <inertia ixx="${base_inertia_val}" ixy="0" ixz="0" iyy="${base_inertia_val}" iyz="0" izz="${base_inertia_val}"/>
+    </inertial>
+  </link>
+  
+  <!-- Left Wheel -->
+  <link name="left_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="${wheel_length_val}" radius="${wheel_radius_val}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="${wheel_length_val}" radius="${wheel_radius_val}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${wheel_mass}"/>
+      <inertia ixx="${wheel_inertia_val}" ixy="0" ixz="0" iyy="${wheel_inertia_val}" iyz="0" izz="${wheel_inertia_val}"/>
+    </inertial>
+  </link>
+  
+  <!-- Right Wheel -->
+  <link name="right_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="${wheel_length_val}" radius="${wheel_radius_val}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="${wheel_length_val}" radius="${wheel_radius_val}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${wheel_mass}"/>
+      <inertia ixx="${wheel_inertia_val}" ixy="0" ixz="0" iyy="${wheel_inertia_val}" iyz="0" izz="${wheel_inertia_val}"/>
+    </inertial>
+  </link>
+  
+  <!-- Front Caster Wheel -->
+  <link name="caster_wheel">
+    <visual>
+      <geometry>
+        <sphere radius="${caster_radius_val}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="${caster_radius_val}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${caster_mass}"/>
+      <inertia ixx="${caster_inertia_val}" ixy="0" ixz="0" iyy="${caster_inertia_val}" iyz="0" izz="${caster_inertia_val}"/>
+    </inertial>
+  </link>
+  
+  <!-- Back Caster Wheel -->
+  <link name="caster_wheel2">
+    <visual>
+      <geometry>
+        <sphere radius="${caster_radius_val}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="${caster_radius_val}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${caster_mass}"/>
+      <inertia ixx="${caster_inertia_val}" ixy="0" ixz="0" iyy="${caster_inertia_val}" iyz="0" izz="${caster_inertia_val}"/>
+    </inertial>
+  </link>
+  
+  <!-- RGB-D Camera for object detection -->  
+  <link name="camera1">
+    <visual>
+      <geometry>
+        <box size="${camera_size}"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${camera_size}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${camera_mass}"/>
+      <inertia ixx="${camera_inertia_val}" ixy="0" ixz="0" iyy="${camera_inertia_val}" iyz="0" izz="${camera_inertia_val}"/>
+    </inertial>
+  </link>
+  
+  <!-- LiDAR for SLAM and navigation -->  
+  <link name="lidar">
+    <visual>
+      <geometry>
+        <cylinder length="${lidar_length_val}" radius="${lidar_radius_val}"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="${lidar_length_val}" radius="${lidar_radius_val}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${lidar_mass}"/>
+      <inertia ixx="${lidar_inertia_val}" ixy="0" ixz="0" iyy="${lidar_inertia_val}" iyz="0" izz="${lidar_inertia_val}"/>
+    </inertial>
+  </link>
+  
+  <!-- Joints -->
+  
+  <!-- Left Wheel Joint - Positioned for 30cm chassis -->
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+    <!-- Position: half of wheel_separation distance from center -->
+    <origin xyz="0 ${wheel_separation/2} -0.05" rpy="-1.5708 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  
+  <!-- Right Wheel Joint - Positioned for 30cm chassis -->
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+    <!-- Position: negative half of wheel_separation distance from center -->
+    <origin xyz="0 -${wheel_separation/2} -0.05" rpy="-1.5708 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  
+  <!-- Front Caster Wheel Joint - Positioned for 30cm chassis -->
+  <joint name="caster_wheel_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_wheel"/>
+    <!-- Position: 12cm forward from center (leaving 3cm margin from edge) -->
+    <origin xyz="0.12 0 -0.1"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  
+  <!-- Back Caster Wheel Joint - Positioned for 30cm chassis -->
+  <joint name="caster_wheel_joint2" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_wheel2"/>
+    <!-- Position: 12cm backward from center (leaving 3cm margin from edge) -->
+    <origin xyz="-0.12 0 -0.1"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  
+  <!-- Camera Joint - Mounted at front for object detection -->
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera1"/>
+    <!-- Position: at front edge of 30cm chassis -->
+    <origin xyz="0.175 0 0.01" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  
+  <!-- Lidar Joint - Centered on top for 360° coverage -->
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar"/>
+    <origin xyz="0 0 0.1" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  
+  <!-- Gazebo Visuals and Friction Parameters -->
+  <gazebo reference="base_link">
+    <material>Gazebo/Blue</material>
+  </gazebo>
+  
+  <gazebo reference="left_wheel">
+    <material>Gazebo/Black</material>
+    <mu1 value="1.0"/>
+    <mu2 value="1.0"/>
+  </gazebo>
+  
+  <gazebo reference="right_wheel">
+    <material>Gazebo/Black</material>
+    <mu1 value="1.0"/>
+    <mu2 value="1.0"/>
+  </gazebo>
+  
+  <gazebo reference="caster_wheel">
+    <material>Gazebo/Black</material>
+    <mu1 value="0.5"/>
+    <mu2 value="0.5"/>
+    <kp>1000000000000000</kp>
+    <kd>1000000000000000</kd>
+  </gazebo>
+  
+  <gazebo reference="caster_wheel2">
+    <material>Gazebo/Black</material>
+    <mu1 value="0.5"/>
+    <mu2 value="0.5"/>
+    <kp>1000000000000000</kp>
+    <kd>1000000000000000</kd>
+  </gazebo>
+  
+  <gazebo reference="camera1">
+    <material>Gazebo/Red</material>
+  </gazebo>
+  
+  <gazebo reference="lidar">
+    <material>Gazebo/Green</material>
+  </gazebo>
+  
+  <!-- Gazebo Plugin for Differential Drive -->  
+  <gazebo>
+
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+            <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+            <left_joint>left_wheel_joint</left_joint>
+            <right_joint>right_wheel_joint</right_joint>
+            <!-- Updated wheel separation for 30cm chassis -->
+            <wheel_separation>${wheel_separation}</wheel_separation>
+            <wheel_radius>${wheel_radius_val}</wheel_radius>
+            <odom_publish_frequency>30</odom_publish_frequency>
+            <max_wheel_torque>10.0</max_wheel_torque>       
+            <max_wheel_acceleration>100</max_wheel_acceleration>
+            <topic>/cmd_vel</topic>
+            <odom_topic>/odom</odom_topic>
+            <frame_id>odom</frame_id>
+            <child_frame_id>base_link</child_frame_id>
+    </plugin>
+
+    <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+      <update_rate>50</update_rate>
+      <joint_name>left_wheel_joint</joint_name>
+      <joint_name>right_wheel_joint</joint_name>
+      <topic>joint_states</topic>
+      <update_rate>30</update_rate>
+    </plugin>
+
+    <plugin filename="gz-sim-odometry-publisher-system" name="gz::sim::systems::OdometryPublisher">
+      <odom_frame>odom</odom_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+      <odom_topic>/odom</odom_topic>
+      <tf_topic>/tf</tf_topic>
+      <dimensions>2</dimensions>
+      <odom_publish_frequency>10</odom_publish_frequency>
+    </plugin>
+  </gazebo>
+
+  <!-- RGB-D Camera Sensor Plugin -->
+  <xacro:if value="$(arg camera_enabled)">
+          <gazebo reference="camera1">
+              <sensor type="depth_camera" name="camera">
+                  <update_rate>30.0</update_rate>
+                  <topic>camera</topic>
+                  <gz_frame_id>camera1</gz_frame_id>
+                  <camera>
+                      <camera_info_topic>camera/camera_info</camera_info_topic>
+                      <horizontal_fov>${radians(camera_horizontal_fov)}</horizontal_fov>
+                      <image>
+                          <width>640</width>
+                          <height>480</height>
+                          <format>R8G8B8</format>
+                      </image>
+                      <clip>
+                          <near>0.05</near>
+                          <far>8.0</far>
+                      </clip>
+                  </camera>
+              </sensor>
+          </gazebo>
+  </xacro:if>
+
+  <!-- LiDAR Sensor Plugin -->
+  <gazebo reference="lidar">
+        <sensor name='gpu_lidar' type='gpu_lidar'>
+            <topic>scan</topic>
+            <update_rate>30</update_rate>
+            <gz_frame_id>lidar</gz_frame_id>
+            <lidar>
+                <scan>
+                    <horizontal>
+                        <samples>360</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-3.14</min_angle>
+                        <max_angle>3.14</max_angle>
+                    </horizontal>
+                </scan>
+                <range>
+                    <min>0.05</min>
+                    <max>20.0</max>
+                    <resolution>0.01</resolution>
+                </range>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.001</stddev>
+                </noise>
+            </lidar>
+            <always_on>1</always_on>
+            <visualize>true</visualize>
+        </sensor>
+  </gazebo>
+</robot>
